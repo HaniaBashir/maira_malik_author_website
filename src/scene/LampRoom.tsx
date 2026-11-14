@@ -3,7 +3,7 @@ import * as THREE from "three";
 import { useThree } from "@react-three/fiber";
 import { reducedMotion } from "../state/nav";
 import { floorPool, softSprite } from "./paperTextures";
-import { useRoomFrame } from "./room";
+import { isPhone, useRoomFrame } from "./room";
 
 const EMBERS = 60;
 
@@ -55,7 +55,7 @@ function Candle() {
   const flame = useRef<THREE.Mesh>(null!);
   const halo = useMemo(softSprite, []);
   // Phones have no free corner for it among the text; the warm light stays, the candle goes.
-  const narrow = useThree((st) => st.viewport.aspect < 0.8);
+  const narrow = useThree((st) => isPhone(st.size.width));
 
   useRoomFrame((state) => {
     if (!flame.current) return;

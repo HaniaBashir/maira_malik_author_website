@@ -3,7 +3,7 @@ import * as THREE from "three";
 import { useThree } from "@react-three/fiber";
 import { reducedMotion } from "../state/nav";
 import { floorPool } from "./paperTextures";
-import { useRoomFrame } from "./room";
+import { isPhone, useRoomFrame } from "./room";
 
 const SPRINKLES = 56;
 const COLORS = ["#ef7fa3", "#5a3022", "#8fd3c1", "#f6c84c", "#ffffff", "#e0394b"];
@@ -58,7 +58,7 @@ function Sprinkles() {
 
 export function SweetsRoom({ children }: { index: number; children: React.ReactNode }) {
   const shadow = useMemo(() => floorPool("rgba(92,40,34,0.42)", "rgba(92,40,34,0.16)"), []);
-  const narrow = useThree((st) => st.viewport.aspect < 0.8);
+  const narrow = useThree((st) => isPhone(st.size.width));
   return (
     <group>
       <Sprinkles />

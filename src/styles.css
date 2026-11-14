@@ -849,8 +849,8 @@ button {
   }
 }
 
-/* Matches the 3D book's layout switch (aspect 1.05): book up top, note underneath. */
-@media (max-aspect-ratio: 21/20) {
+/* Matches the 3D book's layout switch (phone width, or aspect under 1.05): book up top, note underneath. */
+@media (max-aspect-ratio: 21/20), (max-width: 767px) {
   .opened__note {
     top: calc(var(--ay) + 110px);
     right: var(--gutter);

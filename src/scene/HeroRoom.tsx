@@ -4,23 +4,24 @@ import { useThree } from "@react-three/fiber";
 import { useTexture } from "@react-three/drei";
 import { author } from "../content";
 import { getNav } from "../state/nav";
-import { useRoomFrame } from "./room";
+import { isPhone, useRoomFrame } from "./room";
 
 const damp = THREE.MathUtils.damp;
 
 /** The author's portrait, mounted like a print and hung in warm window light. */
 export function HeroRoom() {
   const frame = useRef<THREE.Group>(null!);
-  const { pointer, viewport } = useThree();
+  const { pointer, viewport, size } = useThree();
   const map = useTexture(author.portrait);
   map.colorSpace = THREE.SRGBColorSpace;
 
   const ratio = 733 / 586; // height / width of portrait.jpg
-  const narrow = viewport.aspect < 0.8;
+  const narrow = isPhone(size.width);
   // On phones the print shrinks and sits between the name above and the intro below.
   const h = Math.min(2.6, viewport.height * (narrow ? 0.3 : 0.52), viewport.width * 0.62 * ratio);
   const w = h / ratio;
-  const lift = narrow ? -viewport.height * 0.02 : 0;
+  // Short, wide-ish phone layouts (split screen, small windows) need it a little higher.
+  const lift = narrow ? viewport.height * (viewport.aspect > 0.8 ? 0.06 : -0.02) : 0;
 
   useRoomFrame((state, dt) => {
     const active = getNav().index === 0 ? 1 : 0;

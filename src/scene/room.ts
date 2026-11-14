@@ -14,3 +14,7 @@ export function useRoomFrame(callback: (state: RootState, delta: number) => void
     if (isNear(index)) callback(state, delta);
   });
 }
+
+/** Phone layout: matches the CSS breakpoint (max-width: 767px) so 3D and text always agree. */
+export const PHONE_MAX_WIDTH = 767;
+export const isPhone = (width: number) => width <= PHONE_MAX_WIDTH;

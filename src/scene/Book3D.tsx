@@ -7,6 +7,7 @@ import { bookAnchor } from "../state/anchor";
 import { sfx } from "../sound";
 import { closeBook, getNav, motion, openBook } from "../state/nav";
 import { pageEdges, printedPage, spine } from "./paperTextures";
+import { isPhone } from "./room";
 import { useFontsReady } from "./useFontsReady";
 
 const W = 1.4;
@@ -75,12 +76,13 @@ export function Book3D({ book, index }: { book: Book; index: number }) {
   useFrame((state, dt) => {
     const isActive = getNav().index === index;
     if (Math.abs(motion.progress - index) >= 1) return;
-    const wide = viewport.aspect > 1.05;
+    const phone = isPhone(size.width);
+    const wide = !phone && viewport.aspect > 1.05;
     const t = state.clock.elapsedTime;
     const o = isActive ? motion.open : 0;
 
     // On phones the closed book is smaller and sits higher, clear of the title block below it.
-    const narrow = viewport.aspect < 0.8;
+    const narrow = phone;
     const closedScale = narrow ? Math.min(1, (viewport.height * 0.32) / H) : 1;
     const closedY = narrow ? viewport.height * 0.13 : 0.1;
 
