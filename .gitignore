@@ -1,0 +1,9 @@
+node_modules
+dist
+# Raw phone photos and scans; the site uses the prepared copies in public/
+assets/
+# Local editor and agent settings
+.claude/
+.agents/
+*.tsbuildinfo
+skills-lock.json
