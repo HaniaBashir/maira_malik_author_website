@@ -47,10 +47,21 @@ export function Backdrop() {
 
 function HeroCopy() {
   return (
-    <div className="hero">
-      <p className="bracket-label mono">[ {author.role} ]</p>
-      <h1 className="visually-hidden">{author.nameEn}</h1>
-      <p className="hero__intro">{author.intro}</p>
+    <div className="hero-foot">
+      <div className="hero">
+        <p className="bracket-label mono">[ {author.role} ]</p>
+        <h1 className="visually-hidden">{author.nameEn}</h1>
+        <p className="hero__intro">{author.intro}</p>
+      </div>
+      {/* Her standing at a glance: verified honours only (see content.ts). */}
+      <ul className="honours" aria-label="Honours">
+        {author.honours.map((h) => (
+          <li key={h.title}>
+            <span className="honours__title">{h.title}</span>
+            <span className="honours__detail mono">{h.detail}</span>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }

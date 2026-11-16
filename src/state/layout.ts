@@ -7,7 +7,7 @@ export interface Band {
 }
 
 export interface Bands {
-  /** Between the big name and the intro text, in the hero. */
+  /** Between the big name and the intro and honours, in the hero. */
   hero: Band | null;
   /** Between the header and a book room's title block. */
   book: Band | null;
@@ -17,7 +17,7 @@ const GAP = 14;
 
 function measure(): Bands {
   const name = document.querySelector(".giant--hero span:last-child");
-  const intro = document.querySelector(".hero");
+  const intro = document.querySelector(".hero-foot");
   const header = document.querySelector(".chrome--top");
   const copy = document.querySelector(".book-copy__main");
   const band = (a: Element | null, b: Element | null): Band | null =>
@@ -43,7 +43,7 @@ export function useBands(): Bands {
     void document.fonts.ready.then(update);
     window.addEventListener("resize", update);
     const observer = new ResizeObserver(update);
-    document.querySelectorAll(".giant--hero, .hero, .chrome--top, .book-copy__main").forEach((el) => observer.observe(el));
+    document.querySelectorAll(".giant--hero, .hero-foot, .chrome--top, .book-copy__main").forEach((el) => observer.observe(el));
     return () => {
       cancelAnimationFrame(frame);
       window.removeEventListener("resize", update);

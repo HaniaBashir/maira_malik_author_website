@@ -46,11 +46,20 @@ export interface Book {
 export const author = {
   nameEn: "Maira Faryal Malik",
   nameUr: "مائرہ فریال ملک",
-  role: "Writer · Poet · Islamabad",
+  role: "Award-winning Urdu writer & poet",
   roleUr: "ادیبہ",
   portrait: asset("author/portrait.jpg"),
   intro:
-    "An Islamabad-based Urdu writer and poet: ghazals and nazms, short stories, columns and journalism, a novel, and prize-winning books for children.",
+    "Writer, poet, columnist and journalist from Islamabad. Her work spans ghazals and nazms, short stories, a novel and prize-winning books for children.",
+  /**
+   * Shown on the landing page. Nine books = the eight works in her own list of تصانیف,
+   * plus the novel Meri Raat ka Chiragh.
+   */
+  honours: [
+    { title: "First prize", detail: "National Book Foundation" },
+    { title: "President", detail: "International Writers Forum, Islamabad" },
+    { title: "Nine books", detail: "Poetry, a novel, stories, children's books" },
+  ],
   journey: {
     headingUr: "کہانی سے تحریر تک کا سفر",
     headingEn: "From bedtime stories to books",
