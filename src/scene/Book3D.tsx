@@ -4,6 +4,7 @@ import { useFrame, useThree, type ThreeEvent } from "@react-three/fiber";
 import { useTexture } from "@react-three/drei";
 import type { Book } from "../content";
 import { bookAnchor } from "../state/anchor";
+import { useBands } from "../state/layout";
 import { sfx } from "../sound";
 import { closeBook, getNav, motion, openBook } from "../state/nav";
 import { pageEdges, printedPage, spine } from "./paperTextures";
@@ -33,6 +34,7 @@ export function Book3D({ book, index }: { book: Book; index: number }) {
   const D = book.depth;
   const T = book.binding === "hard" ? 0.022 : 0.008; // board thickness
   const probe = useMemo(() => new THREE.Vector3(), []);
+  const bands = useBands();
 
   const [front, back] = useTexture([book.cover, book.back]);
   front.colorSpace = back.colorSpace = THREE.SRGBColorSpace;
@@ -81,22 +83,38 @@ export function Book3D({ book, index }: { book: Book; index: number }) {
     const t = state.clock.elapsedTime;
     const o = isActive ? motion.open : 0;
 
-    // On phones the closed book is smaller and sits higher, clear of the title block below it.
-    const narrow = phone;
-    const closedScale = narrow ? Math.min(1, (viewport.height * 0.32) / H) : 1;
-    const closedY = narrow ? viewport.height * 0.13 : 0.1;
+    // Phones: fit the closed book into the measured gap between the header and the title
+    // block, so it never covers text, however short the screen.
+    const px = viewport.height / size.height; // world units per CSS pixel
+    const toY = (cssY: number) => (size.height / 2 - cssY) * px;
+    let closedScale = 1;
+    let closedY = 0.1;
+    if (phone && bands.book && bands.book.bottom > bands.book.top) {
+      const gap = bands.book.bottom - bands.book.top;
+      closedScale = Math.min(1, (gap * px * 0.92) / H, (viewport.width * 0.62) / W);
+      closedY = toY((bands.book.top + bands.book.bottom) / 2);
+    }
 
     // The open spread is 2W wide. On wide screens it sits right of centre, leaving room
-    // for a short note on the left; on phones it sits high, with the note underneath.
-    const fitW = (viewport.width * (wide ? 0.56 : 0.8)) / (2 * W);
-    const fitH = (viewport.height * (wide ? 0.56 : 0.3)) / H;
-    const scale = lerp(closedScale, Math.min(fitW, fitH), o) * (hovered && !o ? 1.04 : 1);
+    // for a short note on the left. On phones it sits under the header, sized so the shop
+    // button and the note (about 330px together) still fit below it.
+    let openScale: number;
+    let centreY: number;
+    if (phone) {
+      const top = (bands.book?.top ?? 64) + 4;
+      const spreadPx = Math.max(150, Math.min(size.height - top - 330, size.height * 0.36));
+      openScale = Math.min((viewport.width * 0.8) / (2 * W), (spreadPx * px) / H);
+      centreY = toY(top + (H * openScale) / px / 2);
+    } else {
+      openScale = Math.min((viewport.width * (wide ? 0.56 : 0.8)) / (2 * W), (viewport.height * (wide ? 0.56 : 0.3)) / H);
+      centreY = wide ? viewport.height * 0.05 : viewport.height * 0.18;
+    }
+    const scale = lerp(closedScale, openScale, o) * (hovered && !o ? 1.04 : 1);
     const centreX = wide ? viewport.width * 0.13 : 0;
-    const centreY = wide ? viewport.height * 0.05 : viewport.height * 0.18;
 
     const g = root.current;
     g.position.x = lerp(0, centreX - (W / 2) * scale, o);
-    g.position.y = lerp(closedY + Math.sin(t * 0.9) * 0.07, centreY, o);
+    g.position.y = lerp(closedY + Math.sin(t * 0.9) * 0.05 * closedScale, centreY, o);
     g.position.z = lerp(0, 0.3, o);
     g.scale.setScalar(damp(g.scale.x, scale, 6, dt));
 
