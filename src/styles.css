@@ -207,6 +207,43 @@ button {
   line-height: 1.65;
 }
 
+/* The tiny shelf of covers under the hero intro. */
+.shelf {
+  margin-top: 22px;
+}
+.shelf__row {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.shelf__book {
+  display: block;
+  width: 38px;
+  aspect-ratio: 0.65;
+  overflow: hidden;
+  box-shadow: 0 6px 14px rgba(23, 19, 15, 0.22);
+  transition: transform 0.35s var(--ease), box-shadow 0.35s;
+}
+.shelf__book img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.shelf__book:hover,
+.shelf__book:focus-visible {
+  transform: translateY(-5px) rotate(-2deg);
+  box-shadow: 0 12px 20px rgba(23, 19, 15, 0.28);
+}
+.shelf__label {
+  margin: 10px 0 0;
+  min-height: 1.2em;
+  opacity: 0.6;
+}
+
 /* ---------- Book room ---------- */
 
 .book-copy {
@@ -865,12 +902,22 @@ button {
   .hero {
     bottom: 54px;
   }
+  /* The intro already says "Islamabad-based Urdu writer and poet"; the label gives its room to the portrait. */
   .hero .bracket-label {
-    margin-bottom: 10px;
+    display: none;
   }
   .hero__intro {
     font-size: 14px;
     line-height: 1.55;
+  }
+  .shelf {
+    margin-top: 14px;
+  }
+  .shelf__book {
+    width: 30px;
+  }
+  .shelf__label {
+    margin-top: 6px;
   }
   .book-copy {
     bottom: 54px;

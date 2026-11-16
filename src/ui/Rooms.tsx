@@ -1,5 +1,5 @@
 import { author, books, PAPER, sections, type Book, type Palette } from "../content";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { goTo, openBook, useNav } from "../state/nav";
 import { peek, preloadPhotos } from "./PhotoPeek";
 
@@ -45,12 +45,43 @@ export function Backdrop() {
   );
 }
 
+/** A tiny row of her covers under the intro; each one slides straight to its book's room. */
+function Shelf() {
+  const [hovered, setHovered] = useState<Book | null>(null);
+  return (
+    <nav className="shelf" aria-label="Books">
+      <ul className="shelf__row">
+        {books.map((b, i) => (
+          <li key={b.id}>
+            <button
+              className="shelf__book"
+              data-sound="own"
+              aria-label={`${b.titleEn}, ${b.kind}`}
+              onClick={() => goTo(i + 1)}
+              onPointerEnter={() => setHovered(b)}
+              onPointerLeave={() => setHovered(null)}
+              onFocus={() => setHovered(b)}
+              onBlur={() => setHovered(null)}
+            >
+              <img src={b.cover} alt="" />
+            </button>
+          </li>
+        ))}
+      </ul>
+      <p className="shelf__label mono" aria-hidden>
+        {hovered ? hovered.titleEn : `${books.length} books`}
+      </p>
+    </nav>
+  );
+}
+
 function HeroCopy() {
   return (
     <div className="hero">
       <p className="bracket-label mono">[ {author.role} ]</p>
       <h1 className="visually-hidden">{author.nameEn}</h1>
       <p className="hero__intro">{author.intro}</p>
+      <Shelf />
     </div>
   );
 }
