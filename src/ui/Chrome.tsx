@@ -1,5 +1,5 @@
 import { useSyncExternalStore } from "react";
-import { author, sections } from "../content";
+import { author, books, sections } from "../content";
 import { isSoundOn, onSoundChange, toggleSound } from "../sound";
 import { goTo, useNav } from "../state/nav";
 
@@ -34,21 +34,38 @@ export function Chrome() {
         <span className="mono chrome__hint">{index < sections.length - 1 ? "Scroll →" : "← Back"}</span>
         <nav aria-label="Rooms">
           <ol className="dots">
-            {sections.map((s, i) => (
-              <li key={s.id}>
-                <button
-                  className={`dot${i === index ? " is-active" : ""}`}
-                  aria-label={s.label}
-                  aria-current={i === index ? "step" : undefined}
-                  onClick={() => goTo(i)}
-                >
-                  <span className="dot__label mono">{s.label}</span>
-                </button>
-              </li>
-            ))}
+            {sections.map((s, i) => {
+              const book = books.find((b) => b.id === s.id);
+              return (
+                <li key={s.id} className={book ? "has-cover" : undefined}>
+                  {/* Each book's cover stands over its dot, except on that book's own page.
+                      The dot below does the same job for keyboards and screen readers. */}
+                  {book && (
+                    <button
+                      className={`dot-cover${i === index ? " is-here" : ""}`}
+                      data-sound="own"
+                      tabIndex={-1}
+                      aria-hidden
+                      onClick={() => goTo(i)}
+                    >
+                      <img src={book.cover} alt="" />
+                    </button>
+                  )}
+                  <button
+                    className={`dot${i === index ? " is-active" : ""}`}
+                    aria-label={s.label}
+                    aria-current={i === index ? "step" : undefined}
+                    onClick={() => goTo(i)}
+                  >
+                    <span className="dot__label mono">{s.label}</span>
+                  </button>
+                </li>
+              );
+            })}
           </ol>
         </nav>
-        <span className="mono chrome__label">{sections[index].label}</span>
+        {/* The landing page already shows her name three times; the label is for the other rooms. */}
+        <span className="mono chrome__label">{index > 0 ? sections[index].label : ""}</span>
       </footer>
     </>
   );

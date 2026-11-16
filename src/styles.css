@@ -207,43 +207,6 @@ button {
   line-height: 1.65;
 }
 
-/* The tiny shelf of covers under the hero intro. */
-.shelf {
-  margin-top: 22px;
-}
-.shelf__row {
-  display: flex;
-  align-items: flex-end;
-  gap: 10px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-.shelf__book {
-  display: block;
-  width: 38px;
-  aspect-ratio: 0.65;
-  overflow: hidden;
-  box-shadow: 0 6px 14px rgba(23, 19, 15, 0.22);
-  transition: transform 0.35s var(--ease), box-shadow 0.35s;
-}
-.shelf__book img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-.shelf__book:hover,
-.shelf__book:focus-visible {
-  transform: translateY(-5px) rotate(-2deg);
-  box-shadow: 0 12px 20px rgba(23, 19, 15, 0.28);
-}
-.shelf__label {
-  margin: 10px 0 0;
-  min-height: 1.2em;
-  opacity: 0.6;
-}
-
 /* ---------- Book room ---------- */
 
 .book-copy {
@@ -544,10 +507,51 @@ button {
 
 .dots {
   display: flex;
-  gap: 10px;
+  align-items: flex-end;
+  gap: 34px;
   margin: 0;
   padding: 0;
   list-style: none;
+}
+.dots li {
+  position: relative;
+  display: flex;
+  justify-content: center;
+}
+
+/* A book's cover standing over its dot; it tucks away on that book's own page. */
+.dot-cover {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  width: 26px;
+  aspect-ratio: 0.65;
+  overflow: hidden;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
+  translate: -50% 0;
+  transition: opacity 0.5s, transform 0.5s var(--ease);
+}
+.dot-cover img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.dot-cover:hover {
+  transform: translateY(-4px) rotate(-3deg);
+}
+.dot-cover.is-here {
+  opacity: 0;
+  transform: translateY(8px);
+  pointer-events: none;
+}
+/* On a book dot, its hover label sits above the cover rather than behind it. */
+.has-cover .dot__label {
+  bottom: 70px;
+}
+.has-cover:hover .dot__label {
+  opacity: 1;
+  transform: translate(-50%, 0);
 }
 .dot {
   position: relative;
@@ -798,7 +802,11 @@ button {
     padding-bottom: 20px;
   }
   .dots {
-    gap: 14px;
+    gap: 24px;
+  }
+  .dot-cover {
+    width: 22px;
+    bottom: 18px;
   }
   .dot {
     width: 10px;
@@ -811,8 +819,9 @@ button {
     inset: -14px -8px;
   }
 
+  /* Text blocks sit above the covers standing over the dots. */
   .hero {
-    bottom: 68px;
+    bottom: 116px;
     right: var(--gutter);
     max-width: none;
   }
@@ -826,7 +835,7 @@ button {
   }
 
   .book-copy {
-    bottom: 68px;
+    bottom: 116px;
   }
   .book-copy__ur {
     font-size: 2.1rem;
@@ -850,7 +859,10 @@ button {
     grid-template-columns: 1fr;
     align-content: start;
     gap: 28px;
-    padding: 72px var(--gutter) 130px;
+    padding: 72px var(--gutter) 170px;
+    /* Fade out above the covers standing over the dots. */
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0, transparent 48px, #000 104px, #000 calc(100% - 170px), transparent calc(100% - 96px));
+    mask-image: linear-gradient(to bottom, transparent 0, transparent 48px, #000 104px, #000 calc(100% - 170px), transparent calc(100% - 96px));
   }
   .author__heading {
     margin-bottom: 22px;
@@ -900,27 +912,17 @@ button {
     font-size: min(17vw, 10.5vh);
   }
   .hero {
-    bottom: 54px;
+    bottom: 100px;
   }
-  /* The intro already says "Islamabad-based Urdu writer and poet"; the label gives its room to the portrait. */
   .hero .bracket-label {
-    display: none;
+    margin-bottom: 10px;
   }
   .hero__intro {
     font-size: 14px;
     line-height: 1.55;
   }
-  .shelf {
-    margin-top: 14px;
-  }
-  .shelf__book {
-    width: 30px;
-  }
-  .shelf__label {
-    margin-top: 6px;
-  }
   .book-copy {
-    bottom: 54px;
+    bottom: 100px;
   }
   .book-copy__main .bracket-label {
     margin-bottom: 12px;
