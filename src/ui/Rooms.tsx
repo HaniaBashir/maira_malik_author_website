@@ -90,10 +90,6 @@ function BookCopy({ book, n }: { book: Book; n: number }) {
           <dt>Publisher</dt>
           <dd>{book.publisher}</dd>
         </div>
-        <div>
-          <dt>ISBN</dt>
-          <dd className="tabular">{book.isbn}</dd>
-        </div>
       </dl>
     </div>
   );
