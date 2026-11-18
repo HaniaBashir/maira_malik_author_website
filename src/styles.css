@@ -860,7 +860,8 @@ button {
   .giant--hero {
     justify-content: flex-start;
     padding-top: 9vh;
-    font-size: 17vw;
+    /* Wider than the portrait, so its letters show on both sides of the print. */
+    font-size: 24vw;
   }
   .hero__intro {
     font-size: 15px;
@@ -938,7 +939,7 @@ button {
   }
   .giant--hero {
     padding-top: 56px;
-    font-size: min(17vw, 10.5vh);
+    font-size: min(24vw, 13vh);
   }
   .hero-foot {
     bottom: 54px;

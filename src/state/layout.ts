@@ -7,7 +7,8 @@ export interface Band {
 }
 
 export interface Bands {
-  /** Between the big name and the intro and honours, in the hero. */
+  /** From under "Faryal" in the big name down to the honours, in the hero. The
+   *  portrait may overlap the rest of the name, as it does on desktop. */
   hero: Band | null;
   /** Between the header and a book room's title block. */
   book: Band | null;
@@ -18,7 +19,7 @@ export interface Bands {
 const GAP = 14;
 
 function measure(): Bands {
-  const name = document.querySelector(".giant--hero span:last-child");
+  const name = document.querySelector(".giant--hero span:nth-child(2)");
   const intro = document.querySelector(".hero-foot");
   const header = document.querySelector(".chrome--top");
   const copy = document.querySelector(".book-copy__main");
@@ -31,7 +32,10 @@ function measure(): Bands {
     return range.getBoundingClientRect().width;
   });
   const nameWidth = widths.length ? Math.max(...widths) : null;
-  return { hero: band(name, intro), book: band(header, copy), nameWidth };
+  // The name's tight line height makes its boxes shorter than the letters; clear the descent.
+  const hero = band(name, intro);
+  if (hero && name) hero.top += parseFloat(getComputedStyle(name).fontSize) * 0.12;
+  return { hero, book: band(header, copy), nameWidth };
 }
 
 /**
