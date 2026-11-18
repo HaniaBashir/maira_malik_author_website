@@ -10,6 +10,8 @@
   --mono: "IBM Plex Mono", ui-monospace, monospace;
   --urdu: "Noto Nastaliq Urdu", serif;
   --gutter: clamp(16px, 3vw, 36px);
+  /* Width of each side column on the landing page (intro left, honours right). */
+  --hero-side: min(24vw, 300px);
   --ease: cubic-bezier(0.65, 0, 0.35, 1);
 }
 
@@ -171,7 +173,13 @@ button {
 }
 
 .giant--hero {
-  font-size: clamp(4rem, min(21vw, 27vh), 22rem);
+  /* The widest line is about 2.95em wide, so this keeps the name between the two side
+     columns on squarer windows instead of running under the intro and honours. */
+  font-size: clamp(
+    3rem,
+    min(21vw, 27vh, (100vw - 2 * var(--gutter) - 2 * var(--hero-side) - 48px) / 2.95),
+    22rem
+  );
 }
 .giant--hero span:nth-child(2) {
   font-style: italic;
@@ -208,7 +216,7 @@ button {
   pointer-events: none;
 }
 .hero {
-  max-width: min(32ch, 26vw);
+  max-width: var(--hero-side);
 }
 
 /* Her standing at a glance, set like the honours line on a book jacket. */
@@ -219,6 +227,7 @@ button {
   padding: 0;
   list-style: none;
   text-align: right;
+  max-width: var(--hero-side);
 }
 .honours li {
   display: grid;
@@ -826,6 +835,7 @@ button {
   }
   .honours {
     order: -1;
+    max-width: none;
     grid-template-columns: repeat(3, 1fr);
     gap: 0;
     text-align: center;

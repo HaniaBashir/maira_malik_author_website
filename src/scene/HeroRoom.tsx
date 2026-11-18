@@ -20,7 +20,7 @@ export function HeroRoom() {
   const mat = 0.14; // mat and frame grow with the photo, as fractions of its height
   const edge = 0.16;
   const scale = 0.85; // a little smaller than the space allows, so it sits more quietly
-  const { hero: band } = useBands();
+  const { hero: band, nameWidth } = useBands();
 
   // On desktop the print hangs centred in front of the name. On phones it is fitted into the
   // measured gap between the name and the intro, so it never covers text on any screen size.
@@ -30,8 +30,12 @@ export function HeroRoom() {
   if (isPhone(size.width) && band && band.bottom > band.top) {
     h = Math.min(((band.bottom - band.top) * px) / (1 + edge), viewport.width * 0.62 * ratio);
     centreY = (size.height / 2 - (band.top + band.bottom) / 2) * px;
+    h *= scale;
+  } else {
+    h *= scale;
+    // Cover only the middle of the name, so its first and last letters always show.
+    if (nameWidth) h = Math.min(h, (nameWidth * 0.5 * px) / (1 / ratio + edge));
   }
-  h *= scale;
   const w = h / ratio;
 
   useRoomFrame((state, dt) => {

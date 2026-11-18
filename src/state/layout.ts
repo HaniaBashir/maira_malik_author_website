@@ -11,6 +11,8 @@ export interface Bands {
   hero: Band | null;
   /** Between the header and a book room's title block. */
   book: Band | null;
+  /** Width in CSS pixels of the widest line of the big name in the hero. */
+  nameWidth: number | null;
 }
 
 const GAP = 14;
@@ -22,7 +24,14 @@ function measure(): Bands {
   const copy = document.querySelector(".book-copy__main");
   const band = (a: Element | null, b: Element | null): Band | null =>
     a && b ? { top: a.getBoundingClientRect().bottom + GAP, bottom: b.getBoundingClientRect().top - GAP } : null;
-  return { hero: band(name, intro), book: band(header, copy) };
+  // Measure the letters themselves, not the full-width line boxes they sit in.
+  const range = document.createRange();
+  const widths = [...document.querySelectorAll(".giant--hero span")].map((span) => {
+    range.selectNodeContents(span);
+    return range.getBoundingClientRect().width;
+  });
+  const nameWidth = widths.length ? Math.max(...widths) : null;
+  return { hero: band(name, intro), book: band(header, copy), nameWidth };
 }
 
 /**
@@ -31,7 +40,7 @@ function measure(): Bands {
  * window, the fonts or the text blocks change size.
  */
 export function useBands(): Bands {
-  const [bands, setBands] = useState<Bands>({ hero: null, book: null });
+  const [bands, setBands] = useState<Bands>({ hero: null, book: null, nameWidth: null });
 
   useEffect(() => {
     let frame = 0;
