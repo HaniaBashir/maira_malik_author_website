@@ -22,14 +22,18 @@ export function HeroRoom() {
   const scale = 0.85; // on desktop, a little smaller than the space allows, so it sits more quietly
   const { hero: band, nameWidth } = useBands();
 
-  // On desktop the print hangs centred in front of the name. On phones it fills the space from
-  // under "Faryal" down to the honours, overlapping "Malik", and never the honours.
+  // On desktop the print hangs centred in front of the name. On phones it sits above the
+  // honours, over "Malik", and grows up over "Faryal" (never "Maira") when the gap is too
+  // short for a print as wide as half the screen.
   const px = viewport.height / size.height; // world units per CSS pixel at the portrait's depth
   let h = Math.min(2.6, viewport.height * 0.52, viewport.width * 0.62 * ratio);
   let centreY = -0.1;
   if (isPhone(size.width) && band && band.bottom > band.top) {
-    h = Math.min(((band.bottom - band.top) * px) / (1 + edge), viewport.width * 0.5 * ratio);
-    centreY = (size.height / 2 - (band.top + band.bottom) / 2) * px;
+    const widest = viewport.width * 0.5 * ratio;
+    const wanted = (widest * (1 + edge)) / px; // frame height in CSS pixels at that width
+    const top = Math.max(band.reach ?? band.top, Math.min(band.top, band.bottom - wanted));
+    h = Math.min(((band.bottom - top) * px) / (1 + edge), widest);
+    centreY = (size.height / 2 - (top + band.bottom) / 2) * px;
   } else {
     h *= scale;
     // Cover only the middle of the name, so its first and last letters always show.

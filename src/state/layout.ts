@@ -4,11 +4,13 @@ import { useEffect, useState } from "react";
 export interface Band {
   top: number;
   bottom: number;
+  /** How far up the band may stretch when it is too short (hero only: under "Maira"). */
+  reach?: number;
 }
 
 export interface Bands {
-  /** From under "Faryal" in the big name down to the honours, in the hero. The
-   *  portrait may overlap the rest of the name, as it does on desktop. */
+  /** From under "Faryal" in the big name down to the honours, in the hero. The portrait
+   *  overlaps "Malik", and may also cover "Faryal" (up to `reach`) when space is tight. */
   hero: Band | null;
   /** Between the header and a book room's title block. */
   book: Band | null;
@@ -19,6 +21,7 @@ export interface Bands {
 const GAP = 14;
 
 function measure(): Bands {
+  const first = document.querySelector(".giant--hero span:nth-child(1)");
   const name = document.querySelector(".giant--hero span:nth-child(2)");
   const intro = document.querySelector(".hero-foot");
   const header = document.querySelector(".chrome--top");
@@ -34,7 +37,11 @@ function measure(): Bands {
   const nameWidth = widths.length ? Math.max(...widths) : null;
   // The name's tight line height makes its boxes shorter than the letters; clear the descent.
   const hero = band(name, intro);
-  if (hero && name) hero.top += parseFloat(getComputedStyle(name).fontSize) * 0.12;
+  if (hero && name && first) {
+    const descent = parseFloat(getComputedStyle(name).fontSize) * 0.12;
+    hero.top += descent;
+    hero.reach = first.getBoundingClientRect().bottom + GAP + descent;
+  }
   return { hero, book: band(header, copy), nameWidth };
 }
 
