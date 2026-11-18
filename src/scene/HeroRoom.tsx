@@ -19,6 +19,7 @@ export function HeroRoom() {
   const ratio = 733 / 586; // height / width of portrait.jpg
   const mat = 0.14; // mat and frame grow with the photo, as fractions of its height
   const edge = 0.16;
+  const scale = 0.85; // a little smaller than the space allows, so it sits more quietly
   const { hero: band } = useBands();
 
   // On desktop the print hangs centred in front of the name. On phones it is fitted into the
@@ -30,6 +31,7 @@ export function HeroRoom() {
     h = Math.min(((band.bottom - band.top) * px) / (1 + edge), viewport.width * 0.62 * ratio);
     centreY = (size.height / 2 - (band.top + band.bottom) / 2) * px;
   }
+  h *= scale;
   const w = h / ratio;
 
   useRoomFrame((state, dt) => {
